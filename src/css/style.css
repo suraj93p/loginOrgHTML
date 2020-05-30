@@ -1,0 +1,32 @@
+body{
+    overflow: hidden;
+}
+
+[ng-cloak] {
+    display: none !important;
+}
+
+.invalid-cls {
+    border: 1px dashed #ff0000;
+}
+
+.loginFields{
+    width: 25%;
+}
+
+
+
+.searchbyNameForm{
+    width: 60%;
+    float: right;
+}
+
+.searchbyNameForm > div{
+    float: right;
+}
+
+.container{
+    position: absolute;
+    top: 48%;
+    left: 30%;
+}

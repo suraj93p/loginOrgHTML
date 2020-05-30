@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+      <title>Organisation Chart</title>
+      <meta charset="utf-8">
+      <meta name="description" content="Employees Hierarchy">
+      <meta name="author" content="Suraj Pasayat">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script data-main="js/" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js"></script>
+      <script>require(['js/main.js'])</script>
+</head>
+
+<body ng-controller="appController" ng-cloak>
+      <div class="container col-lg-12 col-md-12 col-sm-12 col-xs-12" ng-show="!loginSuccess">
+            <ng-form name="loginForm" novalidate autocomplete="off">
+                  <div class="form-group">
+                        <label for="userName">{{labels.userName}}</label>
+                        <input type="text" class="form-control loginFields" placeholder="Enter Username" name="userName" ng-model="input.userName"
+                              required>
+                  </div>
+                  <div class="form-group">
+                        <label for="password">{{labels.password}}</label>
+                        <input type="password" class="form-control loginFields" placeholder="Enter Password" name="password" ng-model="input.password"
+                              required>
+                  </div>
+                  <div class="form-group">
+                        <button type="submit" class="btn btn-primary" ng-click="login()">{{labels.login}}</button>
+                  </div>
+            </ng-form>
+      </div>
+      <div class="container col-lg-12 col-md-12 col-sm-12 col-xs-12" ng-show="loginSuccess">
+            <button type="button" class="btn btn-primary btn-md" data-toggle="modal" data-target="#employeeForm">
+                  <span class="fa fa-plus"></span>{{labels.person}}</button>
+            <div class="modal fade" id="employeeForm">
+                  <div class="modal-dialog modal-sm">
+                        <div class="modal-content">
+                              <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">{{labels.employeeForm}}</h4>
+                              </div>
+                              <div class="modal-body">
+                                    <ng-form name="employeeForm" novalidate autocomplete="off">
+                                          <div class="form-group">
+                                                <label for="firstName">{{labels.ID}}</label>
+                                                <input type="text" class="form-control" name="ID" id="ID" ng-model="input.ID" placeholder="Enter your ID" required>
+                                          </div>
+                                          <div class="form-group">
+                                                <label for="name">{{labels.name}}</label>
+                                                <input type="text" class="form-control" name="name" id="name" ng-model="input.name" placeholder="Enter your name" required>
+                                          </div>
+                                          <div class="form-group">
+                                                <label for="fatherName">{{labels.fatherName}}</label>
+                                                <input type="text" class="form-control" name="fatherName" id="fatherName" ng-model="input.fatherName" placeholder="Enter your Father's name"
+                                                      required>
+                                          </div>
+                                          <div class="form-group">
+                                                <label for="email">{{labels.DOB}}</label>
+                                                <input type="text" class="form-control" name="DOB" id="DOB" ng-model="input.DOB" placeholder="Enter DOB" required>
+                                          </div>
+                                          <div class="form-group">
+                                                <label for="email">{{labels.email}}</label>
+                                                <input type="email" class="form-control" name="email" id="email" ng-model="input.email" placeholder="Enter email" required>
+                                          </div>
+                                          <div class="form-group">
+                                                <label for="contactNo">{{labels.contactNo}}</label>
+                                                <input type="text" class="form-control" name="contactNo" id="contactNo" ng-model="input.contactNo" ng-pattern="/^[0-9]{10}$/"
+                                                      placeholder="Enter your contact No" required>
+                                          </div>
+                                          <div class="form-group">
+                                                <label for="loanAmount">{{labels.loanAmount}}</label>
+                                                <input type="text" class="form-control" name="loanAmount" id="loanAmount" ng-model="input.loanAmount" placeholder="Enter your loan amount"
+                                                      required>
+                                          </div>
+                                          <div class="form-group">
+                                                <label for="loanTenure">{{labels.loanTenure}}</label>
+                                                <input type="text" class="form-control" name="loanTenure" id="loanTenure" ng-model="input.loanTenure" placeholder="Enter your loan tenure"
+                                                      required>
+                                          </div>
+                                    </ng-form>
+                              </div>
+                              <div class="modal-footer">
+                                    <button type="submit" class="btn btn-default" ng-disabled="employeeForm.$invalid" ng-click="addUser()">{{labels.addUser}}</button>
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">{{labels.close}}</button>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-md" ng-click="showModalEmployeeList()">
+                  <span class="fa fa-list-alt"></span>{{labels.dashboard}}</button>
+            <div class="modal fade" id="employeeList">
+                  <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                              <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <span class="modal-title">{{labels.person}}</span>
+                                    <form class="navbar-form searchbyNameForm" role="search">
+                                          <div class="input-group add-on">
+                                                <input class="form-control" placeholder="Search by Value..." ng-keyup="filterEmployee()" name="searchTerm" id="searchTerm"
+                                                      ng-model="searchTerm" type="text">
+                                                <div class="input-group-btn">
+                                                      <button class="btn btn-default" type="submit">
+                                                            <i class="glyphicon glyphicon-search"></i>
+                                                      </button>
+                                                </div>
+                                          </div>
+                                    </form>
+                              </div>
+                              <div class="modal-body">
+                                    <table class="table table-bordered table-hover table-condensed" id="employeeListTable">
+                                          <thead>
+                                                <tr>
+                                                      <th style="text-align:center">{{labels.ID}}</th>
+                                                      <th style="text-align:center">{{labels.name}}</th>
+                                                      <th></th>
+                                                </tr>
+                                          </thead>
+                                          <tbody>
+                                                <tr ng-repeat="employee in employees">
+                                                      <td align="center">{{employee.ID}}</td>
+                                                      <td align="center">{{employee.name}}</td>
+                                                      <td align="center">
+                                                            <button type="button" class="btn btn-primary btn-md" title="Show Details!" ng-click="showDetails()">
+                                                                  <span>Show Details</span>
+                                                            </button>
+                                                      </td>
+                                                </tr>
+                                          </tbody>
+                                    </table>
+                                    <div style="text-align: right;">
+                                          <button type="button" class="btn btn-primary btn-md" ng-click="clearStorage()" title="Clear All Data!">
+                                                <span class="fa fa-trash"></span>
+                                          </button>
+                                    </div>
+                              </div>
+                        </div>
+                  </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-md" ng-click="showOrganisationTree()">
+                  <span class="fa fa-sitemap"></span>{{labels.logout}}</button>
+            <div class="modal fade" id="organisationTree">
+                  <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                              <div class="modal-header">
+                              </div>
+                              <div class="modal-body">
+                              </div>
+                        </div>
+                  </div>
+            </div>
+      </div>
+      <div id="toastMessage">{{toastMessage}}</div>
+</body>
+
+</html>
